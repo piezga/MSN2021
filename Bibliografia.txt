@@ -1,0 +1,4 @@
+FAQ sul calcolo del Rt. ISS, 9 settembre 2020	https://www.iss.it/primo-piano/-/asset_publisher/o4oGR9qmvUz9/content/id/5477037
+Rt COVID-19 Italia	https://github.com/Biuni/rt-italy
+Istituto Superiore di Sanità - Consulta i dati	https://www.iss.it/it/consulta-i-dati
+ISS - Dashboard dati (con script per calcolo dell'Rt)	https://www.epicentro.iss.it/coronavirus/sars-cov-2-dashboard
