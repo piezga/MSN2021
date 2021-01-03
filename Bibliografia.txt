@@ -1,4 +1,9 @@
 FAQ sul calcolo del Rt. ISS, 9 settembre 2020	https://www.iss.it/primo-piano/-/asset_publisher/o4oGR9qmvUz9/content/id/5477037
-Rt COVID-19 Italia	https://github.com/Biuni/rt-italy
+Rt COVID-19 Italia (variante del metodo Bettencourt & Ribeiro)	https://github.com/Biuni/rt-italy
+Metodo Bettencourt & Ribeiro	https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0002185
+Variante del metodo B&R http://systrom.com/blog/author/ksys1983/
+Variante del metodo B&R (spiegato)	https://github.com/k-sys/covid-19/blob/master/Realtime%20R0.ipynb
+
 Istituto Superiore di Sanità - Consulta i dati	https://www.iss.it/it/consulta-i-dati
 ISS - Dashboard dati (con script per calcolo dell'Rt)	https://www.epicentro.iss.it/coronavirus/sars-cov-2-dashboard
+[1] Cori A, Ferguson NM, Fraser C, Cauchemez S. A new framework and software to estimate time-varying reproduction numbers during epidemics. Am J Epidemiol. 2013;178(9):1505-1512. doi:10.1093/aje/kwt133
