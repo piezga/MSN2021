@@ -1,8 +1,4 @@
 function plotData(regione,average_over_week)
-%Comparazione dell'andamento nazionale e dell'andamento di una data regione
-%per quanto riguarda i nuovi casi giornalieri e il valore Rt. Usare
-%average_over_week = true/false per mediare sulla settimana.
-
 if nargin<2
     average_over_week = true; %week average enabled
 end
@@ -19,7 +15,12 @@ if wa
 else
     n=1;
 end
-   
+
+%Comparazione dell'andamento nazionale e dell'andamento di una data regione
+%per quanto riguarda i nuovi casi giornalieri e il valore Rt. Usare
+%average_over_week = true/false per mediare sulla settimana.
+
+
  %%
 %Plotting andamento nazionale
 plotNazionale = figure('NumberTitle', 'off', 'Name', 'Andamento nazionale');
