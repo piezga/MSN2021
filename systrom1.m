@@ -1,14 +1,3 @@
-%%%%%%%%%%%in [4] osservo k casi e voglio vedere la probabilità di lambda
-
-%k = 20;
-
-%lam = linspace(1,45,100);
-
-%likelihood = exp(-lam).*lam.^(k)/factorial(k);
-
-%figure
-% plot(lam,likelihood)
-
 %%%%%%%%%%%%in [5]
 
 k = [20, 40, 55, 90];
@@ -20,7 +9,7 @@ rt_range = linspace(0,12,rt_max*100+1);
 %gamma
 gamma = 1/7;
 
-%connessione tra lamba e rt
+%connessione tra lambda e rt
 lam = k(1:end-1).*exp(gamma*(rt_range' - 1));
 
 %calcolo la likelihood per ogni giorno e la normalizzo
