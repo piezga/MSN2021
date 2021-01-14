@@ -7,11 +7,7 @@ gMax=max([gammaMin,gammaMax]);
 if nargin<3
     week_average = true; %week average abilitato di default
 end
-if week_average
-    n=7;
-else
-    n=1;
-end
+
 
 figure
 hold on
@@ -22,12 +18,14 @@ for x = 1/gMax:1/gMin
     gamma=1/x;
     if week_average; gamma=gamma*7;end
     
-    myData=andamento_nazionale.data(1:n:end-mod(length(andamento_nazionale.data),n)); 
+    
 
     if week_average
+        myData=andamento_nazionale.data(7:end);
         myR=Rt(weekAverage(andamento_nazionale.totale_positivi),gamma);
         plot(myData(2:end), myR)
     else
+        myData=andamento_nazionale.data;
         myR=Rt(andamento_nazionale.totale_positivi,gamma);
         plot(myData(2:end), myR)
     end
