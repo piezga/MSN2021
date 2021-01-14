@@ -1,3 +1,4 @@
+%traduce la parte iniziale di systrom per un array k 
 %%%%%%%%%%%%in [5]
 
 k = [20, 40, 55, 90];
@@ -50,4 +51,14 @@ for i = 1:3
     conf_intervals(i,1) = low;
     conf_intervals(i,2) = high;
 end
-conf_intervals
+conf_intervals;
+
+x_ax = 1:numel(likelyvalues);
+xfill = [x_ax, fliplr(x_ax)];
+yfill = [conf_intervals(:,1)',fliplr(conf_intervals(:,2)')];
+
+figure
+hold on
+plot(likelyvalues,'b','LineWidth',1.2)
+fill(xfill,yfill,'b','edgecolor','none','facealpha',0.3)
+hold off
