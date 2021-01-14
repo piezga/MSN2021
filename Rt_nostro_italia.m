@@ -1,5 +1,3 @@
-function Rt_nostro_italia = Rt(totale_positivi,gamma)
-
 load('.\data\andamento-nazionale.mat')
 gamma = 1/9;
 
@@ -9,5 +7,3 @@ plot(weekAverage(Rt_nostro_italia))
 title('R_t come derivata logaritmica (IT)')
 xlabel("Settimane dall'inizio")
 ylabel("R_t")
-
-end
