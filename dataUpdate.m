@@ -4,7 +4,7 @@ function dataUpdate
 %test test test a caso 
 
 
-%Update andamento nazionale
+%Update andamento nazionale (protezione civile)
 url="https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json";
 websave('rawData\andamento-nazionale.txt',url,weboptions('ContentType','json'));
 andamento_nazionale = jsondecode(fileread('rawData\andamento-nazionale.txt'));
@@ -21,6 +21,26 @@ andamento_nazionale = struct('data',datetime(vertcat(andamento_nazionale.data),'
 
 save("data\andamento-nazionale","andamento_nazionale")
 disp("Aggiornato andamento_nazionale.mat")
+
+%Update andamento nazionale (ISS)
+url="https://www.epicentro.iss.it/coronavirus/open-data/covid_19-iss.xlsx";
+websave('rawData\covid_19-iss.xlsx',url);
+[~, ~, casi_inizio_sintomi]=xlsread('rawData\covid_19-iss.xlsx','casi_inizio_sintomi');
+[~, ~, casi_inizio_sintomi_sint]=xlsread('rawData\covid_19-iss.xlsx','casi_inizio_sintomi_sint');
+casi_inizio_sintomi = casi_inizio_sintomi(2:end-1,:);
+casi_inizio_sintomi_sint = casi_inizio_sintomi_sint(2:end-1,:);
+casi_inizio_sintomi = cell2struct(casi_inizio_sintomi,{'data','inizio_sintomi','casi'},2);
+casi_inizio_sintomi_sint = cell2struct(casi_inizio_sintomi_sint,{'data','inizio_sintomi','casi'},2);
+casi_inizio_sintomi = struct('data',datetime(vertcat(casi_inizio_sintomi.data)),...
+                            'inizio_sintomi',datetime(vertcat(casi_inizio_sintomi.inizio_sintomi)), ...
+                            'casi',double(vertcat(char(casi_inizio_sintomi.casi))));
+                   
+casi_inizio_sintomi_sint = struct('data',datetime(vertcat(casi_inizio_sintomi_sint.data)),...
+                            'inizio_sintomi',datetime(vertcat(casi_inizio_sintomi_sint.inizio_sintomi)), ...
+                            'casi',double(vertcat(char(casi_inizio_sintomi_sint.casi))));
+
+save("data\andamento-nazionale-ISS","casi_inizio_sintomi",'casi_inizio_sintomi_sint')
+disp("Aggiornato andamento_nazionale-ISS.mat")
 
 %Update andamento regioni
 url="https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json";
@@ -67,6 +87,7 @@ Rt_regioni_nonUfficiale = struct('data',vertcat(Rt_regioni_nonUfficiale.date),..
 
 save("data\Rt_regioni_nonUfficiale","Rt_regioni_nonUfficiale")
 disp("Aggiornato Rt_regioni_nonUfficiale.mat")
+
 
 
 %Update Rt nazionale
