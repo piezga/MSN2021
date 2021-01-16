@@ -1,6 +1,7 @@
 function compareR(gamma,week_average,sovrapposto,regione,averageBefore,averageWindow)
 
 load("data\andamento-nazionale.mat")
+load('data\andamento-nazionale-ISS.mat')
 load('.\data\calcolo_Rt_Italia.mat')
 load('.\data\regioni.mat')
 load('.\data\Rt_regioni_nonUfficiale.mat')
@@ -13,7 +14,7 @@ if nargin<5
                           %mediare subito sul numero di positivi o mediare dopo il calcolo ri Rt
 end
 if nargin<4
-    regione = "Nazionale"; %dati con cui fare il paragone
+    regione = "Protezione Civile"; %dati con cui fare il paragone
 end
 if nargin<3
     sovrapposto = false; %dati con cui fare il paragone
@@ -25,14 +26,31 @@ if nargin<1
     gamma=1/9;
 end
 
+regione = string(regione);
 
+soloSintomatici = true;
 
-if regione == "Nazionale"
+%DATI NAZIONALI
+if regione == "Protezione Civile" || regione == 'ISS'
     
-    %DATI NAZIONALI
     
     figure('NumberTitle', 'off', 'Name', 'Andamento di R_t nazionale');
-    sgtitle('Andamento di R_t nazionale')
+    
+    
+    if regione == 'Protezione Civile'
+        totale_positivi = andamento_nazionale.totale_positivi;
+        data = andamento_nazionale.data;
+        sgtitle('Andamento di R_t nazionale (dati della Protezione Civile)')
+    elseif soloSintomatici
+        totale_positivi = approssCasiTotali(casi_inizio_sintomi_sint.casi,gamma);
+        data = casi_inizio_sintomi_sint.inizio_sintomi;
+        sgtitle('Andamento di R_t nazionale (dati dell''ISS)')
+    else
+        totale_positivi = approssCasiTotali(casi_inizio_sintomi.casi,gamma);
+        data = casi_inizio_sintomi.inizio_sintomi;
+        sgtitle('Andamento di R_t nazionale (dati dell''ISS)')
+    end
+
 
 
     %plot dell'andamento di R calcolato con l'algoritmo dell' ISS
@@ -59,18 +77,18 @@ if regione == "Nazionale"
     if ~sovrapposto; subplot(2,1,1); end
 
     if week_average
-        myData=andamento_nazionale.data(averageWindow:end);
+        myData=data(averageWindow:end);
         if averageBefore
-            myR=Rt(weekAverage(andamento_nazionale.totale_positivi,averageWindow),gamma);
+            myR=Rt(weekAverage(totale_positivi,averageWindow),gamma);
         else
-            myR=weekAverage(Rt(andamento_nazionale.totale_positivi,gamma),averageWindow);
+            myR=weekAverage(Rt(totale_positivi,gamma),averageWindow);
         end
         p1=plot(myData(2:end), myR,'-','Color','#D95319','LineWidth',1.125);
         hold on
         %plot(myData(2:end), myR,".",'Color','#0072BD')
     else
-        myData=andamento_nazionale.data;
-        myR=Rt(andamento_nazionale.totale_positivi,gamma);
+        myData=data;
+        myR=Rt(totale_positivi,gamma);
         p1=plot(myData(2:end), myR,'-','Color','#D95319','LineWidth',1.125);
     end
 
@@ -100,7 +118,7 @@ else
     %Systrom applica già un filtro Gaussiano, non c'è bisogno di mediare
     
     
-    i=Rt_regioni_nonUfficiale.regione ==regione;
+    i=Rt_regioni_nonUfficiale.regione == regione;
     dataRegione=Rt_regioni_nonUfficiale.data(i);
     
     if ~sovrapposto; subplot(2,1,2); end
@@ -121,7 +139,7 @@ else
     i = regioni.denominazione_regione == regione;
 
     dataRegione=regioni.data(i);
-    positiviRegione=regioni.nuovi_positivi(i);
+    positiviRegione=regioni.totale_positivi(i);
     
     
     if ~sovrapposto; subplot(2,1,1); end
@@ -155,4 +173,14 @@ else
     
     
 end
+end
+
+function I = approssCasiTotali(nuoviCasi,gamma)
+I=zeros(length(nuoviCasi),1);
+I(1)=nuoviCasi(1);
+
+for i=2:length(nuoviCasi)
+    I(i) = I(i-1) + nuoviCasi(i) - gamma*I(i-1);
+end
+
 end
