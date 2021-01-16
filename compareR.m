@@ -1,4 +1,10 @@
 function compareR(gamma,week_average,sovrapposto,regione,averageBefore,averageWindow)
+% compareR is a function.
+%     compareR(gamma, week_average, sovrapposto, regione, averageBefore, averageWindow)
+%     argomenti di default: (1/9, true, false, 'Protezione Civile', true, 7)
+%
+% Oltre alle regioni italiane REGIONE accetta anche 'Protezione Civile' e
+% 'ISS' per i dati nazionali dei rispettivi enti
 
 load("data\andamento-nazionale.mat")
 load('data\andamento-nazionale-ISS.mat')
@@ -30,9 +36,12 @@ regione = string(regione);
 
 soloSintomatici = true;
 
+
+
+
 %DATI NAZIONALI
 if regione == "Protezione Civile" || regione == 'ISS'
-    
+  %%  
     
     figure('NumberTitle', 'off', 'Name', 'Andamento di R_t nazionale');
     
@@ -52,7 +61,6 @@ if regione == "Protezione Civile" || regione == 'ISS'
     end
 
 
-
     %plot dell'andamento di R calcolato con l'algoritmo dell' ISS
     
     %l'algoritmo autonomamente media i dati su finestra settimanale per cui
@@ -70,11 +78,12 @@ if regione == "Protezione Civile" || regione == 'ISS'
     fill([x',fliplr(x')],[yl',fliplr(yu')],[0 0.4470 0.7410],'FaceAlpha','0.5','EdgeColor','none')
     hold on
     p2=plot(x,y,'-','Color',[0 0.4470 0.7410],'LineWidth',1.125);
-    
     hold on
-    
+    %%  
     %plot dell'andamento di R calcolato da noi
-    if ~sovrapposto; subplot(2,1,1); end
+    if ~sovrapposto
+        subplot(2,1,1)
+    end
 
     if week_average
         myData=data(averageWindow:end);
@@ -85,27 +94,40 @@ if regione == "Protezione Civile" || regione == 'ISS'
         end
         p1=plot(myData(2:end), myR,'-','Color','#D95319','LineWidth',1.125);
         hold on
-        %plot(myData(2:end), myR,".",'Color','#0072BD')
+
     else
         myData=data;
         myR=Rt(totale_positivi,gamma);
         p1=plot(myData(2:end), myR,'-','Color','#D95319','LineWidth',1.125);
     end
-
+    
+        
+    
     ylabel('R_t')
     
     
     if ~sovrapposto
         subplot(2,1,1)
         title("Modello SIR (lezione)")
+        hold on
+        xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+        xl=xlim;
+        xlim([xl(1) xl(2)-calmonths])
+        datetick('x')
         
         subplot(2,1,2)
         ylabel('R_t')
         title("Algoritmo ISS")
+        hold on
+        xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
     else
-        legend([p1,p2],["Modello SIR (lezione)","Algoritmo ISS"])
+        hold on
+        xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250],'LabelVerticalAlignment','middle')
+        legend([p1,p2],["Modello SIR (lezione)","Algoritmo ISS"])     
     end
-    
+    xl=xlim;
+    xlim([xl(1) xl(2)-calmonths])
+    datetick('x')
 else
     
     %DATI REGIONALI
@@ -133,7 +155,7 @@ else
     p2=plot(x,y,'-','Color',[0 0.4470 0.7410],'LineWidth',1.125);
 
     hold on
-    
+%%    
     %plot dell'andamento di R calcolato da noi
 
     i = regioni.denominazione_regione == regione;
@@ -151,11 +173,11 @@ else
         else
             myR=weekAverage(Rt(positiviRegione,gamma),averageWindow);
         end
-        p1=plot(myData(2:end), myR,'Color','#D95319','LineWidth',1.124);
+        p1=plot(myData(2:end), myR,'Color','#D95319','LineWidth',1.125);
     else
         myData=dataRegione;
         myR=Rt(positiviRegione,gamma);
-        p1=plot(myData(2:end), myR,'Color','#D95319','LineWidth',1.124);
+        p1=plot(myData(2:end), myR,'Color','#D95319','LineWidth',1.125);
     end
 
     ylabel('R_t')
@@ -163,24 +185,25 @@ else
     if ~sovrapposto
         subplot(2,1,1)
         title("Modello SIR (lezione)")
+        hold on
+        xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+        xl=xlim;
+        xlim([xl(1) xl(2)-calmonths])
+        datetick('x')
         
         subplot(2,1,2)
         ylabel('R_t')
         title("Algoritmo K. Systrom")
+        hold on
+        xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
     else
+        hold on
+        xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250],'LabelVerticalAlignment','middle')
         legend([p1,p2],["Modello SIR (lezione)","Algoritmo K. Systrom"])
     end
+    xl=xlim;
+    xlim([xl(1) xl(2)-calmonths])
+    datetick('x')
     
-    
 end
-end
-
-function I = approssCasiTotali(nuoviCasi,gamma)
-I=zeros(length(nuoviCasi),1);
-I(1)=nuoviCasi(1);
-
-for i=2:length(nuoviCasi)
-    I(i) = I(i-1) + nuoviCasi(i) - gamma*I(i-1);
-end
-
 end

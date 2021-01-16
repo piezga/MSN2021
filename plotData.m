@@ -1,20 +1,25 @@
-function plotData(regione,average_over_week)
+function plotData(average_over_week,ISS,regione)
+%plotData is a function.
+%     plotData(average_over_week, ISS, regione)
+%     default: (true,false,-)
+%
+%Gli argomenti permettono di scegliere se mediare i dati settimanalmente e
+%se usare i dati dei sintomatici con data del primo sintomo dell'ISS oppure
+%i dati della protezione civile.
+
 if nargin<2
+    ISS = false; %week average enabled
+end
+if nargin<1
     average_over_week = true; %week average enabled
 end
 
 load('.\data\andamento-nazionale.mat')
+load('data\andamento-nazionale-ISS.mat')
 load('.\data\calcolo_Rt_Italia.mat')
 load('.\data\regioni.mat')
 load('.\data\Rt_regioni_nonUfficiale.mat')
 
-wa=average_over_week; 
-
-if wa
-    n=7;
-else
-    n=1;
-end
 
 %Comparazione dell'andamento nazionale e dell'andamento di una data regione
 %per quanto riguarda i nuovi casi giornalieri e il valore Rt. Usare
@@ -24,83 +29,105 @@ end
  %%
 %Plotting andamento nazionale
 plotNazionale = figure('NumberTitle', 'off', 'Name', 'Andamento nazionale');
-sgtitle('Andamento nazionale')
-x=andamento_nazionale.data(1:n:end-mod(length(andamento_nazionale.data),n));
+
+if ISS
+    data= casi_inizio_sintomi_sint.inizio_sintomi;
+    nuoviPositivi = casi_inizio_sintomi_sint.casi;
+    sgtitle('Andamento Nazionale (dati dell''ISS)')
+else
+    data = andamento_nazionale.data;
+    nuoviPositivi = andamento_nazionale.nuovi_positivi;
+    sgtitle('Andamento Nazionale (dati della Protezione Civile)')
+ end
+
+
+
+
+
 subplot(2,1,1) %andamento nuovi positivi
 
-if wa
-    plot(x,weekAverage(andamento_nazionale.nuovi_positivi),".")
+if average_over_week
+    x=data(7:end);
+    plot(x,weekAverage(nuoviPositivi),'LineWidth',1.125)
 else
-    plot(x,andamento_nazionale.nuovi_positivi)
+    x=data;
+    plot(x,nuoviPositivi,'LineWidth',1.125)
 end
 
+hold on
+xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+xl=xlim;
+xlim([xl(1) xl(2)-calmonths])
+datetick('x')
+        
 ylabel("Nuovi positivi")
 
 subplot(2,1,2) %andamento Rt
-x=calcolo_Rt_Italia.data(1:n:end-mod(length(calcolo_Rt_Italia.data),n));
 
-if wa
-    yu=weekAverage(calcolo_Rt_Italia.R_upperCI);
-    yl=weekAverage(calcolo_Rt_Italia.R_lowerCI);
-    y=weekAverage(calcolo_Rt_Italia.R_medio);
-else
-    yu=calcolo_Rt_Italia.R_upperCI;
-    yl=calcolo_Rt_Italia.R_lowerCI;
-    y=calcolo_Rt_Italia.R_medio;
-end
+x=calcolo_Rt_Italia.data;
+yu=calcolo_Rt_Italia.R_upperCI;
+yl=calcolo_Rt_Italia.R_lowerCI;
+y=calcolo_Rt_Italia.R_medio;
+
 plot(x,yu,x,yl)
 
-fill([x',fliplr(x')],[yl',fliplr(yu')],"b",'FaceAlpha','0.5','EdgeColor','none')
+fill([x',fliplr(x')],[yl',fliplr(yu')],[0 0.4470 0.7410],'FaceAlpha','0.5','EdgeColor','none')
 hold on
-plot(x,y,'-');
-if wa
-    plot(x,y,'.b')
-end
+plot(x,y,'-','Color',[0 0.4470 0.7410],'LineWidth',1.125);
+hold on
+xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+xl=xlim;
+xlim([xl(1) xl(2)-calmonths])
+datetick('x')
 ylabel('R_t')
+
 %%
-%plotting dell'andamento regionale
-titolo = 'Andamento '+string(regione);
-plotRegionale = figure('NumberTitle', 'off', 'Name', titolo);
-sgtitle(titolo)
+if nargin == 3
+    %plotting dell'andamento regionale
+    titolo = 'Andamento '+string(regione);
+    plotRegionale = figure('NumberTitle', 'off', 'Name', titolo);
+    sgtitle(titolo)
 
-i = regioni.denominazione_regione == regione;
+    i = regioni.denominazione_regione == regione;
 
-x=regioni.data(i);
-x=x(1:n:end-mod(length(x),n));
-subplot(2,1,1) %andamento nuovi positivi
+    x=regioni.data(i);
 
-if wa
-    plot(x,weekAverage(regioni.nuovi_positivi(i)),".")
-else
-    plot(x,regioni.nuovi_positivi(i))
-end
+    subplot(2,1,1) %andamento nuovi positivi
 
-ylabel("Nuovi positivi")
+    if average_over_week
+        x=x(7:end);
+        plot(x,weekAverage(regioni.nuovi_positivi(i)),'LineWidth',1.125)
+    else
+        plot(x,regioni.nuovi_positivi(i),'LineWidth',1.125)
+    end
+    hold on
+    xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+    xl=xlim;
+    xlim([xl(1) xl(2)-calmonths])
+    datetick('x')
+    
+    ylabel("Nuovi positivi")
 
-subplot(2,1,2) %andamento Rt
+    subplot(2,1,2) %andamento Rt
 
-i=Rt_regioni_nonUfficiale.regione ==regione;
-x=Rt_regioni_nonUfficiale.data(i);
-x=x(1:n:end-mod(length(x),n));
+    i=Rt_regioni_nonUfficiale.regione ==regione;
+    x=Rt_regioni_nonUfficiale.data(i);
 
-if wa
-    yu=weekAverage(Rt_regioni_nonUfficiale.High_90(i));
-    yl=weekAverage(Rt_regioni_nonUfficiale.Low_90(i));
-    y=weekAverage(Rt_regioni_nonUfficiale.ML(i));
-else
     yu=Rt_regioni_nonUfficiale.High_90(i);
     yl=Rt_regioni_nonUfficiale.Low_90(i);
     y=Rt_regioni_nonUfficiale.ML(i);
-end
-plot(x,yu,x,yl)
 
-fill([x',fliplr(x')],[yl',fliplr(yu')],"b",'FaceAlpha','0.5','EdgeColor','none')
-hold on
-plot(x,y,'-');
-if wa
-    plot(x,y,'.b')
-end
-ylabel('R_t')
+    plot(x,yu,x,yl)
 
+    fill([x',fliplr(x')],[yl',fliplr(yu')],[0 0.4470 0.7410],'FaceAlpha','0.5','EdgeColor','none')
+    hold on
+    plot(x,y,'-','Color',[0 0.4470 0.7410],'LineWidth',1.125);
+    ylabel('R_t')
+    hold on
+    xline(x(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+    xl=xlim;
+    xlim([xl(1) xl(2)-calmonths])
+    datetick('x')
+end
 
 end
