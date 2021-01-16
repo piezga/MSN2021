@@ -20,24 +20,24 @@ andamento_nazionale = struct('data',datetime(vertcat(andamento_nazionale.data),'
 
 
 save("data\andamento-nazionale","andamento_nazionale")
-disp("Aggiornato andamento_nazionale.mat")
+disp("Aggiornato andamento_nazionale.mat (protezione civile)")
 
 %Update andamento nazionale (ISS)
 url="https://www.epicentro.iss.it/coronavirus/open-data/covid_19-iss.xlsx";
 websave('rawData\covid_19-iss.xlsx',url);
 [~, ~, casi_inizio_sintomi]=xlsread('rawData\covid_19-iss.xlsx','casi_inizio_sintomi');
 [~, ~, casi_inizio_sintomi_sint]=xlsread('rawData\covid_19-iss.xlsx','casi_inizio_sintomi_sint');
-casi_inizio_sintomi = casi_inizio_sintomi(2:end-1,:);
-casi_inizio_sintomi_sint = casi_inizio_sintomi_sint(2:end-1,:);
+casi_inizio_sintomi = casi_inizio_sintomi(2:end-15,:);
+casi_inizio_sintomi_sint = casi_inizio_sintomi_sint(2:end-15,:);
 casi_inizio_sintomi = cell2struct(casi_inizio_sintomi,{'data','inizio_sintomi','casi'},2);
 casi_inizio_sintomi_sint = cell2struct(casi_inizio_sintomi_sint,{'data','inizio_sintomi','casi'},2);
 casi_inizio_sintomi = struct('data',datetime(vertcat(casi_inizio_sintomi.data)),...
                             'inizio_sintomi',datetime(vertcat(casi_inizio_sintomi.inizio_sintomi)), ...
-                            'casi',double(vertcat(char(casi_inizio_sintomi.casi))));
+                            'casi',str2double(vertcat(string(char(casi_inizio_sintomi.casi)))));
                    
 casi_inizio_sintomi_sint = struct('data',datetime(vertcat(casi_inizio_sintomi_sint.data)),...
                             'inizio_sintomi',datetime(vertcat(casi_inizio_sintomi_sint.inizio_sintomi)), ...
-                            'casi',double(vertcat(char(casi_inizio_sintomi_sint.casi))));
+                            'casi',str2double(vertcat(string(char(casi_inizio_sintomi_sint.casi)))));
 
 save("data\andamento-nazionale-ISS","casi_inizio_sintomi",'casi_inizio_sintomi_sint')
 disp("Aggiornato andamento_nazionale-ISS.mat")
