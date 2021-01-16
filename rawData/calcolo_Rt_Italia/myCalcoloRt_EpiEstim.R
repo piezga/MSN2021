@@ -18,7 +18,7 @@ SI <- (intervallo.seriale/sum(intervallo.seriale))
 
 ## leggo la curva epidemica da un file con 3 colonne separate da spazi: data, numero di casi trasmessi localmente, numero di casi importati
 
-curva.epidemica <- read.table("curva_epidemica_Italia_2020-12-22")
+curva.epidemica <- read.table("curva_epidemica_Italia_2021-01-13")
 curva.epidemica[,1] <- as.Date(curva.epidemica[,1])
 names(curva.epidemica) <- c("dates", "local", "imported") ## assegno i nomi richiesti dal pacchetto EpiEstim
 
