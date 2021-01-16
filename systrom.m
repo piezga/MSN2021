@@ -41,13 +41,13 @@ legend('Giorno 1','Giorno 2', 'Giorno 3')
 
 %qual è il valore più probabile di Rt per ogni giorno?
 
-[likelyprob,index] = max(posteriors);
+[likelyprob,index] = max(likelihood);
 likelyvalues = rt_range(index);
 
 %confidence interval 
 conf_intervals = zeros(3,2);
 for i = 1:3
-    [low, high] = confinterval(posteriors(:,i),rt_range,0.95);
+    [low, high] = confinterval(likelihood(:,i),rt_range,0.95);
     conf_intervals(i,1) = low;
     conf_intervals(i,2) = high;
 end
