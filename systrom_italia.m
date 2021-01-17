@@ -4,8 +4,25 @@
 load('.\data\andamento-nazionale.mat')
 load('.\data\regioni.mat')
 i=regioni.denominazione_regione == 'Emilia-Romagna';
-casi = regioni.nuovi_positivi(i);
-k = weekAverage(casi)';
+casiRegione = regioni.totale_positivi(i);
+casiNazionali = andamento_nazionale.totale_positivi;
+
+%SMOOTHNESS DEI DATI
+
+%k = weekAverage(casiNazionali)';
+
+% win = gausswin(7);
+% k = filter(win,1,casiNazionali)';
+
+
+%k=smoothdata(casiNazionali,'gaussian',7)';
+
+
+
+k=smoothdata(casiNazionali,'gaussian',10)';
+
+%END SMOOTHNESS
+
 %array per ogni possibile valore di Rt
 rt_max = 12;
 rt_range = linspace(0,rt_max,rt_max*100+1);
