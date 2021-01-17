@@ -2,7 +2,9 @@
 
 %genero il vettore k
 load('.\data\andamento-nazionale.mat')
-casi = andamento_nazionale.nuovi_positivi;
+load('.\data\regioni.mat')
+i=regioni.denominazione_regione == 'Emilia-Romagna';
+casi = regioni.nuovi_positivi(i);
 k = weekAverage(casi)';
 %array per ogni possibile valore di Rt
 rt_max = 12;
