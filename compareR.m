@@ -182,28 +182,28 @@ else
 
     ylabel('R_t')
     
-    if ~sovrapposto
-        subplot(2,1,1)
-        title("Modello SIR (lezione)")
-        hold on
-        xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
-        xl=xlim;
-        xlim([xl(1) xl(2)-calmonths])
-        datetick('x')
+    %if ~sovrapposto
+       % subplot(2,1,1)
+        %title("Modello SIR (lezione)")
+        %hold on
+        %xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+        %xl=xlim;
+        %xlim([xl(1) xl(2)-calmonths])
+        %datetick('x')
         
-        subplot(2,1,2)
-        ylabel('R_t')
-        title("Algoritmo K. Systrom")
-        hold on
-        xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
-    else
-        hold on
-        xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250],'LabelVerticalAlignment','middle')
-        legend([p1,p2],["Modello SIR (lezione)","Algoritmo K. Systrom"])
-    end
-    xl=xlim;
-    xlim([xl(1) xl(2)-calmonths])
-    datetick('x')
+        %subplot(2,1,2)
+        %ylabel('R_t')
+        %title("Algoritmo K. Systrom")
+        %hold on
+        %xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250])
+    %else
+       % hold on
+       % xline(myData(end-14),'--','Ultimi 14 giorni','Color',[0.9290 0.6940 0.1250],'LabelVerticalAlignment','middle')
+       % legend([p1,p2],["Modello SIR (lezione)","Algoritmo K. Systrom"])
+    %end
+    %xl=xlim;
+    %xlim([xl(1) xl(2)-calmonths])
+    %datetick('x')
     
-end
+%end
 end

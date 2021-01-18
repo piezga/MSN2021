@@ -3,24 +3,26 @@
 %genero il vettore k
 load('.\data\andamento-nazionale.mat')
 load('.\data\regioni.mat')
-i=regioni.denominazione_regione == 'Emilia-Romagna';
+i=regioni.denominazione_regione == 'Lombardia';
 casiRegione = regioni.totale_positivi(i);
 casiNazionali = andamento_nazionale.totale_positivi;
 
 %SMOOTHNESS DEI DATI
 
-%k = weekAverage(casiNazionali)';
+%k = weekAverage(casiRegione)';
 
 % win = gausswin(7);
 % k = filter(win,1,casiNazionali)';
 
 
-%k=smoothdata(casiNazionali,'gaussian',7)';
+k=smoothdata(casiNazionali,'gaussian',7)';
 
 
 
-k=smoothdata(casiNazionali,'gaussian',10)';
+%k=smoothdata(casiNazionali,'gaussian',10)';
 
+%k = casiRegione';
+%k = casiNazionali';
 %END SMOOTHNESS
 
 %array per ogni possibile valore di Rt
@@ -31,7 +33,7 @@ rt_range = linspace(0,rt_max,rt_max*100+1);
 gamma = 1/9;
 
 %R nostro
-dlnI=diff(log(andamento_nazionale.totale_positivi));
+dlnI=diff(log(casiRegione));
 R_nostro=(weekAverage(dlnI) + gamma)/gamma;
 
 %connessione tra lambda e rt
@@ -65,6 +67,7 @@ end
 figure
 hold on
 plot(likelyvalues,'b','LineWidth',1.2)
+set(gca,'FontSize',20)
 x_ax = 1:numel(likelyvalues)-1;
 xfill = [x_ax, fliplr(x_ax)];
 yfill = [conf_intervals(:,1)',fliplr(conf_intervals(:,2)')];
